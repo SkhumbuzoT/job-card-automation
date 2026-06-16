@@ -180,7 +180,7 @@ export default function Dashboard() {
                 {workOrders.slice(0, 20).map((order, i) => (
                   <tr key={i} style={{ borderBottom: '1px solid var(--color-border)', fontSize: '0.875rem' }}>
                     <td style={{ padding: '0.75rem 0', fontWeight: '500' }}>{order.account_number}</td>
-                    <td style={{ padding: '0.75rem 0' }}>{order.customer_name}</td>
+                    <td style={{ padding: '0.75rem 0' }}>{order.physical_address}</td>
                     <td style={{ padding: '0.75rem 0' }}>{order.meter_serial_number}</td>
                     <td style={{ padding: '0.75rem 0' }}>
                       <span style={{ 
