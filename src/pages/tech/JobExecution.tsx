@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
-import { ArrowLeft, AlertTriangle, Camera, Check, ClipboardList, Image, Wrench } from 'lucide-react';
+import { ArrowLeft, AlertTriangle, Camera, Check, Wrench } from 'lucide-react';
 
 export default function JobExecution() {
   const { id } = useParams<{ id: string }>();
