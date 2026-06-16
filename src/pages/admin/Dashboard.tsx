@@ -170,7 +170,7 @@ export default function Dashboard() {
               <thead>
                 <tr style={{ borderBottom: '1px solid var(--color-border)', color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>
                   <th style={{ padding: '0.75rem 0' }}>Account</th>
-                  <th style={{ padding: '0.75rem 0' }}>Customer</th>
+                  <th style={{ padding: '0.75rem 0' }}>Address</th>
                   <th style={{ padding: '0.75rem 0' }}>Meter Serial</th>
                   <th style={{ padding: '0.75rem 0' }}>Status</th>
                   <th style={{ padding: '0.75rem 0', textAlign: 'right' }}>Actions</th>
