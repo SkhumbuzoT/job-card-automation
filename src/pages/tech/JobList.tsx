@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { MapPin, Bell, CheckCircle, Clock } from 'lucide-react';
+import { MapPin, Bell } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
 
@@ -35,18 +35,18 @@ export default function JobList() {
         <div className="job-card-header">
           <h3 className="job-card-title">{job.customer_name}</h3>
           <span className={`status-badge ${isCompleted ? 'status-badge-completed' : 'status-badge-pending'}`}>
-            {isCompleted ? 'Completed' : 'Installation'}
+            {isCompleted ? 'Done' : 'Installation'}
           </span>
         </div>
         
-        <div className="job-card-address">
+        <p className="job-card-address">
           <MapPin size={14} />
-          <span>{job.physical_address || "Address not provided"}</span>
-        </div>
-
+          {job.physical_address}
+        </p>
+        
         <div className="job-card-footer">
-          <span className="job-card-meta">{job.account_number}</span>
-          <span className="job-card-time">{job.scheduled_date ? formatTime(job.scheduled_date) : "Unscheduled"}</span>
+          <span>WO-{job.id?.substring(0, 4) || '2264'}</span>
+          <span>{formatTime(job.scheduled_date)}</span>
         </div>
       </div>
     </Link>
@@ -54,18 +54,16 @@ export default function JobList() {
 
   return (
     <div className="job-list-container">
-      {/* Header */}
       <div className="job-list-header">
         <div>
-          <h2 className="job-list-greeting">Good morning, Sipho</h2>
-          <p className="job-list-subtitle">{jobs.length} jobs assigned today</p>
+          <h1 className="job-list-greeting">Good morning, Sipho</h1>
+          <p className="job-list-subtitle">Here's your schedule for today</p>
         </div>
-        <button className="icon-button" aria-label="Notifications">
-          <Bell size={20} />
+        <button className="icon-button">
+          <Bell size={20} color="var(--color-gray-600)" />
         </button>
       </div>
 
-      {/* Summary Metrics */}
       <div className="metrics-row">
         <div className="metric-card">
           <div className="metric-value outstanding-value">{outstanding.length}</div>
@@ -73,32 +71,28 @@ export default function JobList() {
         </div>
         <div className="metric-card">
           <div className="metric-value completed-value">{completed.length}</div>
-          <div className="metric-label">Completed today</div>
+          <div className="metric-label">Completed</div>
         </div>
       </div>
 
-      {/* Outstanding Section */}
       <div className="jobs-section">
         <div className="section-header">
-          <Clock size={16} />
-          <h4>Outstanding</h4>
+          <h4>OUTSTANDING</h4>
+          <span>({outstanding.length})</span>
         </div>
-        {outstanding.length === 0 && (
-          <div className="empty-state">No outstanding jobs.</div>
+        {outstanding.length > 0 ? outstanding.map(job => renderJobCard(job, false)) : (
+          <div className="empty-state">No outstanding jobs</div>
         )}
-        {outstanding.map(j => renderJobCard(j, false))}
       </div>
 
-      {/* Completed Section */}
       <div className="jobs-section">
-        <div className="section-header">
-          <CheckCircle size={16} />
-          <h4>Completed</h4>
+        <div className="section-header" style={{ marginTop: '2rem' }}>
+          <h4>COMPLETED</h4>
+          <span>({completed.length})</span>
         </div>
-        {completed.length === 0 && (
-          <div className="empty-state">No completed jobs yet.</div>
+        {completed.length > 0 ? completed.map(job => renderJobCard(job, true)) : (
+          <div className="empty-state">No completed jobs yet</div>
         )}
-        {completed.map(j => renderJobCard(j, true))}
       </div>
     </div>
   );
