@@ -45,7 +45,7 @@ export async function generateJobCard(workOrder: any, execution: any) {
     // Embed photos if they exist
     if (execution?.old_meter_photo_url || execution?.new_meter_photo_url) {
       const page = pdfDoc.addPage();
-      const { width, height } = page.getSize();
+      const { height } = page.getSize();
       
       let yOffset = height - 50;
 
@@ -85,7 +85,7 @@ export async function generateJobCard(workOrder: any, execution: any) {
     const pdfBytes = await pdfDoc.save();
     
     // Download logic
-    const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+    const blob = new Blob([pdfBytes as any], { type: 'application/pdf' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
     link.download = `JOB_CARD_${workOrder.account_number}.pdf`;
