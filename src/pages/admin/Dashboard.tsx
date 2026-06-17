@@ -103,16 +103,6 @@ export default function Dashboard() {
       if (fileInputRef.current) fileInputRef.current.value = '';
     }
   };
-  
-  const operationalHealth = Math.round(
-  (stats.completed /
-  (workOrders.length || 1))*100
-  );
-  
-  const slaPerformance = Math.round(
-  (stats.completed /
-  (workOrders.length || 1))*100
-  );
 
   const handleDownloadPDF = async (order: any) => {
     // Fetch execution data
@@ -135,19 +125,8 @@ export default function Dashboard() {
     <div className="animate-slide-up">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
         <div className="dashboard-title">
-
-        <h1>
-        
-        Operations Intelligence Center
-        
-        </h1>
-        
-        <p>
-        
-        Live visibility across field operations and work execution.
-        
-        </p>
-        
+          <h1>Operations Intelligence Center</h1>
+          <p>Live visibility across field operations and work execution.</p>
         </div>
         <input 
           type="file" 
@@ -178,13 +157,17 @@ export default function Dashboard() {
           <h3 style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>Exceptions / Missed SLA</h3>
           <p style={{ fontSize: '2rem', fontWeight: 'bold', marginTop: '0.5rem', color: 'var(--color-danger)' }}>{stats.exceptions}</p>
         </div>
-        <div className="glass-panel" style={{ padding: '1.5rem', borderLeft: '4px solid var(--color-danger)' }}>
+        <div className="glass-panel" style={{ padding: '1.5rem', borderLeft: '4px solid #2563EB' }}>
           <h3 style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>Operational Health</h3>
-          <p style={{ fontSize: '2rem', fontWeight: 'bold', marginTop: '0.5rem', color: 'var(--color-danger)' }}>{stats.completed}</p>
+          <p style={{ fontSize: '2rem', fontWeight: 'bold', marginTop: '0.5rem', color: '#2563EB' }}>
+            {workOrders.length > 0 ? Math.round((stats.completed / workOrders.length) * 100) : 0}%
+          </p>
         </div>
-        <div className="glass-panel" style={{ padding: '1.5rem', borderLeft: '4px solid var(--color-danger)' }}>
+        <div className="glass-panel" style={{ padding: '1.5rem', borderLeft: '4px solid #14B8A6' }}>
           <h3 style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>SLA Performance</h3>
-          <p style={{ fontSize: '2rem', fontWeight: 'bold', marginTop: '0.5rem', color: 'var(--color-danger)' }}>{stats.completed}</p>
+          <p style={{ fontSize: '2rem', fontWeight: 'bold', marginTop: '0.5rem', color: '#14B8A6' }}>
+            {workOrders.length > 0 ? Math.round((stats.completed / workOrders.length) * 100) : 0}%
+          </p>
         </div>
       </div>
 
