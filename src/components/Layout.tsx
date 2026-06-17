@@ -1,131 +1,262 @@
-<nav
-className="glass-panel"
+import { Outlet, Link, useLocation } from 'react-router-dom';
 
-style={{
+import {
+  LayoutDashboard,
+  Wrench,
+  LogOut
+} from 'lucide-react';
 
-height:'72px',
+interface LayoutProps {
+  role: 'admin' | 'tech';
+}
 
-padding:'0 32px',
+function Layout({ role }: LayoutProps) {
 
-display:'flex',
+  const location = useLocation();
 
-justifyContent:'space-between',
+  return (
 
-alignItems:'center',
+    <div className={`app-container ${role === 'tech' ? 'tech-theme' : ''}`}>
 
-marginBottom:'32px'
+      {role === 'admin' ? (
 
-}}
->
+        <>
 
-<div
-style={{
+          <nav
+            className="glass-panel"
+            style={{
+              height: '72px',
+              padding: '0 32px',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '32px'
+            }}
+          >
 
-display:'flex',
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '32px'
+              }}
+            >
 
-alignItems:'center',
+              <div>
 
-gap:'32px'
+                <h2>
 
-}}
->
+                  Prime Chain Control Tower
 
-<div>
+                </h2>
 
-<h2>
+                <p
+                  style={{
+                    fontSize: '12px',
+                    color: 'var(--color-text-muted)'
+                  }}
+                >
 
-Prime Chain Control Tower
+                  Operations Intelligence Platform
 
-</h2>
+                </p>
 
-<p
-style={{
+              </div>
 
-fontSize:'12px',
+              <Link
 
-color:'var(--color-text-muted)'
+                to="/admin/dashboard"
 
-}}
->
+                className={
+                  location.pathname.includes('/admin/dashboard')
+                    ? 'btn btn-primary'
+                    : 'btn btn-outline'
+                }
 
-Operations Intelligence Platform
+              >
 
-</p>
+                <LayoutDashboard size={18} />
 
-</div>
+                Dashboard
 
-<Link
+              </Link>
 
-to="/admin/dashboard"
+            </div>
 
-className='btn btn-primary'
+            <button className="btn btn-outline">
 
->
+              <LogOut size={18} />
 
-<LayoutDashboard size={18}/>
+              Sign Out
 
-Dashboard
+            </button>
 
-</Link>
+          </nav>
 
-</div>
+          <main className="main-content animate-fade-in">
 
-<div
+            <Outlet />
 
-style={{
+          </main>
 
-display:'flex',
+        </>
 
-alignItems:'center',
+      ) : (
 
-gap:'16px'
+        <>
 
-}}
+          <main
 
->
+            className="main-content animate-fade-in"
 
-<div>
+            style={{
 
-<p
+              paddingBottom: '90px',
 
-style={{
+              maxWidth: '700px',
 
-fontWeight:600
+              margin: '0 auto',
 
-}}
+              width: '100%'
 
->
+            }}
 
-Administrator
+          >
 
-</p>
+            <Outlet />
 
-<p
+          </main>
 
-style={{
+          <nav
 
-fontSize:'12px',
+            style={{
 
-color:'var(--color-text-muted)'
+              position: 'fixed',
 
-}}
+              bottom: 0,
 
->
+              left: 0,
 
-Operations Control
+              right: 0,
 
-</p>
+              background: '#0F172A',
 
-</div>
+              borderTop: '1px solid #1E293B',
 
-<button className='btn btn-outline'>
+              display: 'flex',
 
-<LogOut size={18}/>
+              justifyContent: 'space-around',
 
-Sign Out
+              padding: '12px 0',
 
-</button>
+              zIndex: 100
 
-</div>
+            }}
 
-</nav>
+          >
+
+            <Link
+
+              to="/tech/jobs"
+
+              style={{
+
+                display: 'flex',
+
+                flexDirection: 'column',
+
+                alignItems: 'center',
+
+                gap: '4px',
+
+                textDecoration: 'none',
+
+                color: location.pathname.includes('/tech/jobs')
+
+                  ? '#FFFFFF'
+
+                  : '#94A3B8'
+
+              }}
+
+            >
+
+              <LayoutDashboard size={20} />
+
+              <span style={{ fontSize: '12px' }}>
+
+                Jobs
+
+              </span>
+
+            </Link>
+
+            <div
+
+              style={{
+
+                display: 'flex',
+
+                flexDirection: 'column',
+
+                alignItems: 'center',
+
+                gap: '4px',
+
+                color: '#94A3B8'
+
+              }}
+
+            >
+
+              <Wrench size={20} />
+
+              <span style={{ fontSize: '12px' }}>
+
+                My Stats
+
+              </span>
+
+            </div>
+
+            <div
+
+              style={{
+
+                display: 'flex',
+
+                flexDirection: 'column',
+
+                alignItems: 'center',
+
+                gap: '4px',
+
+                color: '#94A3B8'
+
+              }}
+
+            >
+
+              <LogOut size={20} />
+
+              <span style={{ fontSize: '12px' }}>
+
+                Profile
+
+              </span>
+
+            </div>
+
+          </nav>
+
+        </>
+
+      )}
+
+    </div>
+
+  );
+
+}
+
+export default Layout;
