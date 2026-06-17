@@ -1,137 +1,140 @@
-.app-container{
-  min-height:100vh;
-  background:#F8FAFC;
-}
+import { Outlet, Link, useLocation } from 'react-router-dom';
 
-.main-content{
-  padding:32px;
-  width:100%;
-}
+import {
 
-.dashboard-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:32px;
-}
+LayoutDashboard,
 
-.dashboard-title h1{
-  font-size:32px;
-  font-weight:700;
-}
+Wrench,
 
-.dashboard-title p{
-  color:#64748B;
-  margin-top:8px;
-}
+LogOut
 
-.dashboard-grid{
-  display:grid;
-  grid-template-columns:
-  repeat(auto-fit,minmax(260px,1fr));
+} from 'lucide-react';
 
-  gap:24px;
+interface LayoutProps {
 
-  margin-bottom:32px;
-}
-
-.dashboard-card{
-  background:#fff;
-
-  padding:24px;
-
-  border-radius:18px;
-
-  box-shadow:
-  0 8px 24px rgba(15,23,42,.08);
-
-  transition:.3s ease;
-}
-
-.dashboard-card:hover{
-  transform:translateY(-4px);
-}
-
-.dashboard-table{
-  background:#fff;
-
-  border-radius:18px;
-
-  box-shadow:
-  0 8px 24px rgba(15,23,42,.08);
-
-  padding:24px;
-}
-
-.glass-panel{
-  background:#fff;
-
-  border-radius:18px;
-
-  box-shadow:
-  0 8px 24px rgba(15,23,42,.08);
-}
-
-.btn{
-  display:flex;
-
-  align-items:center;
-
-  gap:8px;
-
-  padding:12px 18px;
-
-  border:none;
-
-  border-radius:12px;
-
-  font-weight:600;
-
-  cursor:pointer;
-
-  transition:.3s;
-}
-
-.btn-primary{
-
-  background:#2563EB;
-
-  color:white;
-}
-
-.btn-primary:hover{
-
-  background:#1D4ED8;
-}
-
-.btn-outline{
-
-  background:white;
-
-  border:1px solid #E2E8F0;
-}
-
-.animate-fade-in{
-
-  animation:fadeIn .4s ease;
-}
-
-@keyframes fadeIn{
-
-from{
-
-opacity:0;
-
-transform:translateY(10px);
+role:'admin'|'tech';
 
 }
 
-to{
+function Layout({ role }: LayoutProps){
 
-opacity:1;
+const location = useLocation();
 
-transform:translateY(0);
+return(
+
+<div className="app-container">
+
+{role === 'admin' ? (
+
+<>
+
+<nav className="top-nav">
+
+<div className="nav-left">
+
+<div>
+
+<h2>Prime Chain Control Tower</h2>
+
+<p>Operations Intelligence Platform</p>
+
+</div>
+
+<Link
+
+to="/admin/dashboard"
+
+className={
+
+location.pathname.includes('/admin/dashboard')
+
+? 'btn btn-primary'
+
+: 'btn btn-outline'
 
 }
 
+>
+
+<LayoutDashboard size={18}/>
+
+Dashboard
+
+</Link>
+
+</div>
+
+<button className="btn btn-outline">
+
+<LogOut size={18}/>
+
+Sign Out
+
+</button>
+
+</nav>
+
+<main className="main-content">
+
+<Outlet/>
+
+</main>
+
+</>
+
+):(
+
+
+<>
+
+<main className="main-content tech-container">
+
+<Outlet/>
+
+</main>
+
+<nav className="mobile-nav">
+
+<Link
+
+to="/tech/jobs"
+
+className="mobile-link"
+
+>
+
+<LayoutDashboard size={20}/>
+
+<span>Jobs</span>
+
+</Link>
+
+<div className="mobile-link">
+
+<Wrench size={20}/>
+
+<span>My Stats</span>
+
+</div>
+
+<div className="mobile-link">
+
+<LogOut size={20}/>
+
+<span>Profile</span>
+
+</div>
+
+</nav>
+
+</>
+
+)}
+
+</div>
+
+);
+
 }
+
+export default Layout;
