@@ -1,60 +1,60 @@
-:root{
+/* index.css */
+:root {
+  /* Dark Color Palette */
+  --bg-main: #0a0e17;         /* Deepest background */
+  --bg-card: #151b2b;         /* Panel background */
+  --bg-card-hover: #1e263a;   /* Panel hover/highlight */
+  --border-color: #1e263a;    /* Subtle borders */
+  
+  --text-primary: #ffffff;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
 
---color-primary:#2563EB;
-
---color-accent:#14B8A6;
-
---color-success:#10B981;
-
---color-warning:#F59E0B;
-
---color-danger:#EF4444;
-
---color-text:#0F172A;
-
---color-text-muted:#64748B;
-
---color-border:#E2E8F0;
-
---glass-border:1px solid #E2E8F0;
-
-font-family:
-Inter,
-system-ui,
-sans-serif;
+  --color-primary: #4f46e5;   /* Indigo/Purple for active states */
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+  
+  font-family: Inter, system-ui, sans-serif;
 }
 
-*{
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
-box-sizing:border-box;
-
-margin:0;
-
-padding:0;
+body {
+  background: var(--bg-main);
+  color: var(--text-primary);
+  min-width: 320px;
 }
 
-body{
-
-background:#F8FAFC;
-
-color:var(--color-text);
-
-min-width:320px;
+/* New Layout Classes */
+.app-container {
+  display: flex;
+  min-height: 100vh;
+  background: var(--bg-main);
 }
 
-#root{
-
-width:100%;
-
-min-height:100vh;
+/* Remove old light-mode card styling, replace with dark glass */
+.glass-panel, .dashboard-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: none;
+  transition: 0.2s ease;
 }
+.glass-panel:hover { background: var(--bg-card-hover); }
 
-button{
-
-font-family:inherit;
+.btn {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
 }
-
-a{
-
-text-decoration:none;
+.btn-primary {
+  background: var(--color-primary);
+  border: none;
 }
+.btn-primary:hover { background: #4338ca; }
+.btn-outline:hover { background: var(--bg-card-hover); }
