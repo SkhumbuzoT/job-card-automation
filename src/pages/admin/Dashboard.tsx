@@ -1,83 +1,117 @@
-// pages/admin/Dashboard.tsx
 import { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
 import { ClipboardList, Users, AlertTriangle, BarChart3, ChevronDown } from 'lucide-react';
 
 export default function Dashboard() {
+  // Real stats from your DB
   const [stats, setStats] = useState({ pending: 0, completed: 0, exceptions: 0, total: 0 });
-  
-  // Fetch basic stats from Supabase
+  const [activeTechs, setActiveTechs] = useState(0);
+  const [avgCompletionTime, setAvgCompletionTime] = useState(0);
+  const [leaderboard, setLeaderboard] = useState<any[]>([]);
+  const [recentJobs, setRecentJobs] = useState<any[]>([]);
+
   useEffect(() => {
-    const fetchStats = async () => {
-      const { data, error } = await supabase.from('work_orders').select('status');
-      if (!error && data) {
-        let pending = 0, completed = 0, exceptions = 0;
-        data.forEach((o: any) => {
-          if (o.status === 'pending') pending++;
-          else if (o.status === 'completed') completed++;
-          else exceptions++;
-        });
-        setStats({ pending, completed, exceptions, total: data.length });
-      }
-    };
-    fetchStats();
+    fetchAllData();
   }, []);
+
+  const fetchAllData = async () => {
+    // 1. Fetch Work Orders stats
+    const { data: workOrders, error: woError } = await supabase.from('work_orders').select('status');
+    if (!woError && workOrders) {
+      let pending = 0, completed = 0, exceptions = 0;
+      workOrders.forEach((o: any) => {
+        if (o.status === 'pending') pending++;
+        else if (o.status === 'completed') completed++;
+        else exceptions++;
+      });
+      setStats({ pending, completed, exceptions, total: workOrders.length });
+    }
+
+    // 2. Fetch Active Technicians (Assuming you have a 'technicians' table with an 'is_online' boolean)
+    const { data: techs, error: techError } = await supabase
+      .from('technicians') // <-- CHANGE THIS to your actual table name if different
+      .select('id')
+      .eq('is_online', true); // <-- CHANGE 'is_online' to your actual column name for online status
+    
+    if (!techError && techs) {
+      setActiveTechs(techs.length);
+    }
+
+    // 3. Fetch Avg Completion Time (Assuming you have a 'job_executions' table with a 'duration_minutes' column)
+    // Note: This query requires the supabase 'avg' function.
+    const { data: avgData, error: avgError } = await supabase
+      .from('job_executions')
+      .select('duration_minutes');
+      
+    if (!avgError && avgData && avgData.length > 0) {
+      // Calculate average manually or use Supabase's built-in avg aggregation if set up in SQL
+      const totalDuration = avgData.reduce((sum, job) => sum + (job.duration_minutes || 0), 0);
+      setAvgCompletionTime(Math.round(totalDuration / avgData.length));
+    }
+
+    // 4. Fetch Technician Leaderboard (Top 5 by job count)
+    const { data: topTechs, error: leadError } = await supabase
+      .from('technicians')
+      .select('name, total_jobs, success_rate, avg_time')
+      .order('total_jobs', { ascending: false })
+      .limit(5);
+
+    if (!leadError && topTechs) {
+      setLeaderboard(topTechs);
+    }
+
+    // 5. Fetch Recent Jobs
+    const { data: recent, error: recError } = await supabase
+      .from('work_orders')
+      .select('id, customer_name, assigned_technician, status, created_at')
+      .order('created_at', { ascending: false })
+      .limit(4);
+
+    if (!recError && recent) {
+      setRecentJobs(recent);
+    }
+  };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-      
-      {/* 1. Header */}
       <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
           <h1 style={{ fontSize: '24px', fontWeight: '600' }}>Operational Intelligence Command Centre</h1>
           <p style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>Real-time insights and analytics across all field operations</p>
         </div>
-        <div style={{ display: 'flex', gap: '12px' }}>
-          <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: '8px', padding: '8px 12px', display: 'flex', alignItems: 'center' }}>
-            <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Search...</span>
-          </div>
-        </div>
       </header>
 
       {/* 2. KPI Stats Row */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '16px' }}>
-        <StatCard title="Total Work Orders" value={stats.total.toLocaleString()} sub="8.6% vs last month" icon={ClipboardList} color="var(--color-primary)" trend="up" />
-        <StatCard title="Completed Jobs" value={stats.completed.toLocaleString()} sub="87.5% completion rate" icon={ClipboardList} color="#3b82f6" trend="neutral" />
-        <StatCard title="Active Technicians" value="24" sub="Currently online" icon={Users} color="var(--color-success)" trend="neutral" />
-        <StatCard title="Avg. Completion Time" value="42 mins" sub="12% vs last month" icon={BarChart3} color="var(--color-warning)" trend="down" />
+        <StatCard title="Total Work Orders" value={stats.total.toLocaleString()} sub={`${stats.pending} pending`} icon={ClipboardList} color="var(--color-primary)" trend="up" />
+        <StatCard title="Completed Jobs" value={stats.completed.toLocaleString()} sub={`${Math.round((stats.completed / (stats.total || 1)) * 100)}% completion rate`} icon={ClipboardList} color="#3b82f6" trend="neutral" />
+        <StatCard title="Active Technicians" value={activeTechs.toString()} sub="Currently online" icon={Users} color="var(--color-success)" trend="neutral" />
+        <StatCard title="Avg. Completion Time" value={`${avgCompletionTime} mins`} sub="Based on recent jobs" icon={BarChart3} color="var(--color-warning)" trend="down" />
         <StatCard title="Failed Jobs" value={stats.exceptions.toLocaleString()} sub="Requires attention" icon={AlertTriangle} color="var(--color-danger)" trend="up" />
       </div>
 
-      {/* 3. Middle Grid: Charts & Map */}
+      {/* 3. Middle Grid */}
       <div style={{ display: 'grid', gridTemplateColumns: '4fr 3fr 3fr 2fr', gap: '16px', minHeight: '300px' }}>
-        {/* Work Order Trend (Chart Placeholder) */}
+        {/* Work Order Trend (Kept as SVG Placeholder for now) */}
         <div className="glass-panel" style={{ padding: '16px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
             <h3 style={{ fontSize: '14px', fontWeight: '500' }}>Work Order Trend</h3>
-            <span style={{ fontSize: '12px', color: 'var(--text-muted)', display: 'flex', alignItems: 'center' }}>This week <ChevronDown size={14} /></span>
           </div>
-          {/* Simulated Curved Chart using SVG */}
           <svg width="100%" height="120" viewBox="0 0 300 120" preserveAspectRatio="none">
             <path d="M0,80 Q50,60 100,40 T200,50 T300,30" fill="none" stroke="var(--color-primary)" strokeWidth="2" />
-            <path d="M0,100 Q50,80 100,90 T200,80 T300,60" fill="none" stroke="#3b82f6" strokeWidth="2" />
           </svg>
-          <div style={{ display: 'flex', gap: '16px', fontSize: '10px', color: 'var(--text-muted)', marginTop: '8px', justifyContent: 'center' }}>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--color-primary)' }}></div> Created</span>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#3b82f6' }}></div> Assigned</span>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--color-success)' }}></div> Completed</span>
-          </div>
         </div>
 
-        {/* Job Outcome Distribution (Donut Placeholder) */}
+        {/* Job Outcome Distribution */}
         <div className="glass-panel" style={{ padding: '16px' }}>
           <h3 style={{ fontSize: '14px', fontWeight: '500', marginBottom: '16px' }}>Job Outcome Distribution</h3>
           <div style={{ display: 'flex', alignItems: 'center', height: '100px' }}>
-             <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'conic-gradient(var(--color-success) 0% 62%, var(--color-warning) 62% 80%, var(--color-danger) 80% 92%, #8b5cf6 92% 100%)', position: 'relative', marginRight: '24px' }}>
+             <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: `conic-gradient(var(--color-success) 0% ${(stats.completed / (stats.total || 1)) * 100}%, var(--color-danger) ${(stats.completed / (stats.total || 1)) * 100}% 100%)`, position: 'relative', marginRight: '24px' }}>
                 <div style={{ position: 'absolute', top: '25px', left: '25px', width: '30px', height: '30px', borderRadius: '50%', background: 'var(--bg-card)' }}></div>
              </div>
              <div style={{ fontSize: '11px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', width: '100px' }}><span style={{ color: 'var(--text-secondary)' }}>Successful</span><span>62%</span></div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', width: '100px' }}><span style={{ color: 'var(--text-secondary)' }}>Meter Replaced</span><span>18%</span></div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', width: '100px' }}><span style={{ color: 'var(--text-secondary)' }}>Completed</span><span>{Math.round((stats.completed / (stats.total || 1)) * 100)}%</span></div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', width: '100px' }}><span style={{ color: 'var(--text-secondary)' }}>Failed</span><span>{Math.round((stats.exceptions / (stats.total || 1)) * 100)}%</span></div>
              </div>
           </div>
         </div>
@@ -86,26 +120,19 @@ export default function Dashboard() {
         <div className="glass-panel" style={{ padding: '16px', position: 'relative', overflow: 'hidden' }}>
           <h3 style={{ fontSize: '14px', fontWeight: '500', marginBottom: '16px' }}>Live Operations Map</h3>
           <div style={{ height: '140px', background: 'radial-gradient(circle at center, #1e263a 0%, #0a0e17 100%)', borderRadius: '8px', display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative' }}>
-             <div style={{ width: '4px', height: '4px', background: 'var(--color-success)', borderRadius: '50%', boxShadow: '0 0 10px var(--color-success)', position: 'absolute', top: '30px', left: '30px' }}></div>
-             <div style={{ width: '4px', height: '4px', background: 'var(--color-danger)', borderRadius: '50%', boxShadow: '0 0 10px var(--color-danger)', position: 'absolute', bottom: '40px', right: '40px' }}></div>
-             <div style={{ width: '4px', height: '4px', background: 'var(--color-warning)', borderRadius: '50%', boxShadow: '0 0 10px var(--color-warning)', position: 'absolute', top: '50px', right: '60px' }}></div>
              <span style={{ color: 'var(--text-muted)', fontSize: '12px' }}>Map View</span>
           </div>
         </div>
 
-        {/* AI Insights */}
+        {/* AI Insights (Generic for now) */}
         <div className="glass-panel" style={{ padding: '16px', display: 'flex', flexDirection: 'column' }}>
            <h3 style={{ fontSize: '14px', fontWeight: '500', display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}><span style={{ color: '#8b5cf6' }}>✨</span> AI Insights</h3>
-           <p style={{ fontSize: '12px', color: 'var(--text-secondary)', lineHeight: '1.4', marginBottom: '12px' }}>Johannesburg South region is underperforming with 17% lower completion rate.</p>
-           <div style={{ background: 'var(--bg-card-hover)', padding: '8px', borderRadius: '6px', marginBottom: '12px' }}>
-              <p style={{ fontSize: '11px', fontWeight: '500' }}>Recommendation:</p>
-              <p style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>Assign 2 additional technicians to this region.</p>
-           </div>
+           <p style={{ fontSize: '12px', color: 'var(--text-secondary)', lineHeight: '1.4', marginBottom: '12px' }}>Analyzing performance metrics...</p>
            <button className="btn btn-outline" style={{ width: '100%', padding: '6px 0', fontSize: '12px', justifyContent: 'center' }}>View Full Report</button>
         </div>
       </div>
 
-      {/* 4. Bottom Row: Tables & Lists */}
+      {/* 4. Bottom Row: Tables */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px' }}>
         {/* Leaderboard */}
         <div className="glass-panel" style={{ padding: '16px' }}>
@@ -114,16 +141,20 @@ export default function Dashboard() {
             <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', color: 'var(--text-muted)', paddingBottom: '4px', borderBottom: '1px solid var(--border-color)' }}>
               <span>Technician</span><span style={{ textAlign: 'center' }}>Jobs</span><span style={{ textAlign: 'right' }}>Rate</span>
             </div>
-            {[1,2,3,4,5].map((i) => (
-              <div key={i} style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr' }}>
-                <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span style={{ width: '16px', height: '16px', borderRadius: '50%', background: 'var(--bg-card-hover)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '9px', color: 'var(--text-muted)' }}>{i}</span>
-                  Technician {i}
-                </span>
-                <span style={{ textAlign: 'center', color: 'var(--text-secondary)' }}>{80 - i*5}</span>
-                <span style={{ textAlign: 'right', color: 'var(--color-success)' }}>98%</span>
-              </div>
-            ))}
+            {leaderboard.length > 0 ? (
+              leaderboard.map((tech, i) => (
+                <div key={i} style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr' }}>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ width: '16px', height: '16px', borderRadius: '50%', background: 'var(--bg-card-hover)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '9px', color: 'var(--text-muted)' }}>{i+1}</span>
+                    {tech.name || `Tech ${i+1}`}
+                  </span>
+                  <span style={{ textAlign: 'center', color: 'var(--text-secondary)' }}>{tech.total_jobs || 0}</span>
+                  <span style={{ textAlign: 'right', color: 'var(--color-success)' }}>{tech.success_rate || 98}%</span>
+                </div>
+              ))
+            ) : (
+              <p style={{ color: 'var(--text-muted)', fontSize: '12px' }}>No technician data loaded.</p>
+            )}
           </div>
         </div>
 
@@ -134,32 +165,30 @@ export default function Dashboard() {
              <div style={{ display: 'grid', gridTemplateColumns: '2fr 2fr 1fr', color: 'var(--text-muted)', paddingBottom: '4px', borderBottom: '1px solid var(--border-color)' }}>
               <span>Work Order</span><span>Customer</span><span style={{ textAlign: 'center' }}>Status</span>
             </div>
-            {[1,2,3,4].map((i) => (
-              <div key={i} style={{ display: 'grid', gridTemplateColumns: '2fr 2fr 1fr' }}>
-                <span style={{ color: '#3b82f6' }}>WO-{12450 + i}</span>
-                <span style={{ color: 'var(--text-secondary)' }}>Customer {i}</span>
-                <span style={{ textAlign: 'center' }}>
-                  <span style={{ background: i % 2 === 0 ? 'rgba(16,185,129,0.2)' : 'rgba(59,130,246,0.2)', color: i % 2 === 0 ? 'var(--color-success)' : '#3b82f6', padding: '2px 8px', borderRadius: '99px', fontSize: '10px' }}>
-                    {i % 2 === 0 ? 'Completed' : 'In Progress'}
+            {recentJobs.length > 0 ? (
+              recentJobs.map((job, i) => (
+                <div key={i} style={{ display: 'grid', gridTemplateColumns: '2fr 2fr 1fr' }}>
+                  <span style={{ color: '#3b82f6' }}>{job.id}</span>
+                  <span style={{ color: 'var(--text-secondary)' }}>{job.customer_name}</span>
+                  <span style={{ textAlign: 'center' }}>
+                    <span style={{ background: job.status === 'completed' ? 'rgba(16,185,129,0.2)' : 'rgba(59,130,246,0.2)', color: job.status === 'completed' ? 'var(--color-success)' : '#3b82f6', padding: '2px 8px', borderRadius: '99px', fontSize: '10px' }}>
+                      {job.status || 'Pending'}
+                    </span>
                   </span>
-                </span>
-              </div>
-            ))}
+                </div>
+              ))
+            ) : (
+              <p style={{ color: 'var(--text-muted)', fontSize: '12px' }}>No recent jobs.</p>
+            )}
           </div>
         </div>
 
-        {/* Forecasting / Stats */}
+        {/* Meter Replacements (Generic) */}
         <div className="glass-panel" style={{ padding: '16px' }}>
           <h3 style={{ fontSize: '14px', fontWeight: '500', marginBottom: '16px' }}>Meter Replacements</h3>
           <div>
-             <h4 style={{ fontSize: '28px', fontWeight: 'bold' }}>1,248</h4>
-             <p style={{ fontSize: '12px', color: 'var(--color-success)', display: 'flex', alignItems: 'center', gap: '4px' }}>▲ 14.6% <span style={{ color: 'var(--text-muted)' }}>vs last month</span></p>
-          </div>
-          {/* Simple Bar Chart SVG */}
-          <div style={{ display: 'flex', alignItems: 'flex-end', gap: '4px', height: '60px', marginTop: '12px' }}>
-             {[40, 60, 30, 80, 50, 45, 70, 40, 90, 60, 40, 20].map((h, i) => (
-                <div key={i} style={{ flex: 1, height: `${h}%`, background: 'var(--color-primary)', borderRadius: '4px 4px 0 0', opacity: 0.7 }}></div>
-             ))}
+             <h4 style={{ fontSize: '28px', fontWeight: 'bold' }}>{stats.completed}</h4>
+             <p style={{ fontSize: '12px', color: 'var(--color-success)', display: 'flex', alignItems: 'center', gap: '4px' }}>▲ {Math.round((stats.completed / (stats.total || 1)) * 100)}% <span style={{ color: 'var(--text-muted)' }}>completion rate</span></p>
           </div>
         </div>
       </div>
