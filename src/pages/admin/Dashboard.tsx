@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
-import { ClipboardList, Users, AlertTriangle, BarChart3, ChevronDown } from 'lucide-react';
+import { ClipboardList, Users, AlertTriangle, BarChart3 } from 'lucide-react';
 
 export default function Dashboard() {
   // Real stats from your DB
@@ -29,27 +29,25 @@ export default function Dashboard() {
 
     // 2. Fetch Active Technicians (Assuming you have a 'technicians' table with an 'is_online' boolean)
     const { data: techs, error: techError } = await supabase
-      .from('technicians') // <-- CHANGE THIS to your actual table name if different
+      .from('technicians')
       .select('id')
-      .eq('is_online', true); // <-- CHANGE 'is_online' to your actual column name for online status
+      .eq('is_online', true);
     
     if (!techError && techs) {
       setActiveTechs(techs.length);
     }
 
-    // 3. Fetch Avg Completion Time (Assuming you have a 'job_executions' table with a 'duration_minutes' column)
-    // Note: This query requires the supabase 'avg' function.
+    // 3. Fetch Avg Completion Time
     const { data: avgData, error: avgError } = await supabase
       .from('job_executions')
       .select('duration_minutes');
       
     if (!avgError && avgData && avgData.length > 0) {
-      // Calculate average manually or use Supabase's built-in avg aggregation if set up in SQL
       const totalDuration = avgData.reduce((sum, job) => sum + (job.duration_minutes || 0), 0);
       setAvgCompletionTime(Math.round(totalDuration / avgData.length));
     }
 
-    // 4. Fetch Technician Leaderboard (Top 5 by job count)
+    // 4. Fetch Technician Leaderboard
     const { data: topTechs, error: leadError } = await supabase
       .from('technicians')
       .select('name, total_jobs, success_rate, avg_time')
@@ -92,7 +90,6 @@ export default function Dashboard() {
 
       {/* 3. Middle Grid */}
       <div style={{ display: 'grid', gridTemplateColumns: '4fr 3fr 3fr 2fr', gap: '16px', minHeight: '300px' }}>
-        {/* Work Order Trend (Kept as SVG Placeholder for now) */}
         <div className="glass-panel" style={{ padding: '16px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
             <h3 style={{ fontSize: '14px', fontWeight: '500' }}>Work Order Trend</h3>
@@ -102,7 +99,6 @@ export default function Dashboard() {
           </svg>
         </div>
 
-        {/* Job Outcome Distribution */}
         <div className="glass-panel" style={{ padding: '16px' }}>
           <h3 style={{ fontSize: '14px', fontWeight: '500', marginBottom: '16px' }}>Job Outcome Distribution</h3>
           <div style={{ display: 'flex', alignItems: 'center', height: '100px' }}>
@@ -116,7 +112,6 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Live Operations Map (Placeholder) */}
         <div className="glass-panel" style={{ padding: '16px', position: 'relative', overflow: 'hidden' }}>
           <h3 style={{ fontSize: '14px', fontWeight: '500', marginBottom: '16px' }}>Live Operations Map</h3>
           <div style={{ height: '140px', background: 'radial-gradient(circle at center, #1e263a 0%, #0a0e17 100%)', borderRadius: '8px', display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative' }}>
@@ -124,7 +119,6 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* AI Insights (Generic for now) */}
         <div className="glass-panel" style={{ padding: '16px', display: 'flex', flexDirection: 'column' }}>
            <h3 style={{ fontSize: '14px', fontWeight: '500', display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}><span style={{ color: '#8b5cf6' }}>✨</span> AI Insights</h3>
            <p style={{ fontSize: '12px', color: 'var(--text-secondary)', lineHeight: '1.4', marginBottom: '12px' }}>Analyzing performance metrics...</p>
@@ -134,7 +128,6 @@ export default function Dashboard() {
 
       {/* 4. Bottom Row: Tables */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px' }}>
-        {/* Leaderboard */}
         <div className="glass-panel" style={{ padding: '16px' }}>
           <h3 style={{ fontSize: '14px', fontWeight: '500', marginBottom: '16px' }}>Technician Leaderboard</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '12px' }}>
@@ -158,7 +151,6 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Recent Executions */}
         <div className="glass-panel" style={{ padding: '16px' }}>
           <h3 style={{ fontSize: '14px', fontWeight: '500', marginBottom: '16px' }}>Recent Job Executions</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '12px' }}>
@@ -183,7 +175,6 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Meter Replacements (Generic) */}
         <div className="glass-panel" style={{ padding: '16px' }}>
           <h3 style={{ fontSize: '14px', fontWeight: '500', marginBottom: '16px' }}>Meter Replacements</h3>
           <div>
