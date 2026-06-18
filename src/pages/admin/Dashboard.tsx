@@ -1,7 +1,7 @@
 // pages/admin/Dashboard.tsx
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
-import { Download, ChevronDown, Users, ClipboardList, AlertTriangle, BarChart3 } from 'lucide-react';
+import { ClipboardList, Users, AlertTriangle, BarChart3, ChevronDown } from 'lucide-react';
 
 export default function Dashboard() {
   const [stats, setStats] = useState({ pending: 0, completed: 0, exceptions: 0, total: 0 });
