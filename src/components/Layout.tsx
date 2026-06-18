@@ -1,73 +1,71 @@
-import { Outlet, Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Wrench, LogOut } from 'lucide-react';
+// Layout.tsx
+import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
+import { 
+  LayoutDashboard, ClipboardList, Users, BarChart3, 
+  Map, Settings, Bell, LogOut, Menu
+} from 'lucide-react';
 
-interface LayoutProps {
-  role: 'admin' | 'tech';
-}
+interface LayoutProps { role: 'admin' | 'tech'; }
 
 function Layout({ role }: LayoutProps) {
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    // Add logout logic here
+    navigate('/');
+  };
 
   return (
     <div className="app-container">
-      {role === 'admin' ? (
-        <>
-          <nav className="top-nav">
-            <div className="nav-left">
-              <div>
-                <h2>Prime Chain Control Tower</h2>
-                <p>Operations Intelligence Platform</p>
-              </div>
-              <Link
-                to="/admin/dashboard"
-                className={
-                  location.pathname.includes('/admin/dashboard')
-                    ? 'btn btn-primary'
-                    : 'btn btn-outline'
-                }
-              >
-                <LayoutDashboard size={18} />
-                Dashboard
-              </Link>
-            </div>
-            <button className="btn btn-outline">
-              <LogOut size={18} />
-              Sign Out
-            </button>
-          </nav>
+      {/* SIDEBAR */}
+      <aside style={{ width: '240px', minHeight: '100vh', background: 'var(--bg-main)', borderRight: '1px solid var(--border-color)', padding: '24px 16px', display: 'flex', flexDirection: 'column' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '40px' }}>
+          <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'var(--color-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>F</div>
+          <div>
+            <h2 style={{ fontSize: '18px', fontWeight: '600' }}>FieldOps</h2>
+            <p style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Intelligence</p>
+          </div>
+        </div>
 
-          <main className="main-content">
-            <Outlet />
-          </main>
-        </>
-      ) : (
-        <>
-          <main className="main-content tech-container">
-            <Outlet />
-          </main>
+        <nav style={{ display: 'flex', flexDirection: 'column', gap: '8px', flex: 1 }}>
+          <NavItem icon={LayoutDashboard} label="Overview" to="/admin/dashboard" active={location.pathname.includes('/dashboard')} />
+          <NavItem icon={ClipboardList} label="Work Orders" to="#" />
+          <NavItem icon={Users} label="Technicians" to="#" />
+          <NavItem icon={BarChart3} label="Analytics" to="#" />
+          <NavItem icon={Map} label="Live Map" to="#" />
+          <NavItem icon={Bell} label="Alerts" to="#" badge="6" />
+          <NavItem icon={Settings} label="Settings" to="#" />
+        </nav>
 
-          <nav className="mobile-nav">
-            <Link
-              to="/tech/jobs"
-              className="mobile-link"
-            >
-              <LayoutDashboard size={20} />
-              <span>Jobs</span>
-            </Link>
+        <div style={{ paddingTop: '16px', borderTop: '1px solid var(--border-color)' }}>
+          <button onClick={handleLogout} className="btn btn-outline" style={{ width: '100%', justifyContent: 'center' }}>
+            <LogOut size={16} /> Sign Out
+          </button>
+        </div>
+      </aside>
 
-            <div className="mobile-link">
-              <Wrench size={20} />
-              <span>My Stats</span>
-            </div>
-
-            <div className="mobile-link">
-              <LogOut size={20} />
-              <span>Profile</span>
-            </div>
-          </nav>
-        </>
-      )}
+      {/* MAIN CONTENT AREA */}
+      <main style={{ flex: 1, padding: '24px 32px', overflowY: 'auto' }}>
+        <Outlet />
+      </main>
     </div>
+  );
+}
+
+// Helper for sidebar items
+function NavItem({ icon: Icon, label, to, active, badge }: any) {
+  return (
+    <Link to={to} style={{ 
+      display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 12px', 
+      borderRadius: '8px', textDecoration: 'none', color: active ? '#fff' : 'var(--text-secondary)',
+      background: active ? 'var(--color-primary)' : 'transparent',
+      transition: '0.2s'
+    }}>
+      <Icon size={18} />
+      <span style={{ fontSize: '14px', fontWeight: '500' }}>{label}</span>
+      {badge && <span style={{ marginLeft: 'auto', background: 'var(--color-danger)', color: '#fff', fontSize: '10px', padding: '2px 8px', borderRadius: '99px' }}>{badge}</span>}
+    </Link>
   );
 }
 
