@@ -1,0 +1,129 @@
+PDF Merge Log - 2026-02-09 07:02:43
+======================================================================
+[2026-02-09 07:02:43] 📂 Base directory: /Users/skhumbuzotshuma/Downloads/combine
+[2026-02-09 07:02:43] 📄 Job cards location: /Users/skhumbuzotshuma/Downloads/combine/job_cards
+[2026-02-09 07:02:43] 🖼️  Images location: /Users/skhumbuzotshuma/Downloads/combine/images
+[2026-02-09 07:02:43] 📦 Output location: /Users/skhumbuzotshuma/Downloads/combine/merged_output
+[2026-02-09 07:02:43] 
+📊 FILE SCAN RESULTS:
+[2026-02-09 07:02:43]    Found 16 job card PDF(s)
+[2026-02-09 07:02:43]    Found 16 image PDF(s)
+[2026-02-09 07:02:43] 
+🔍 ANALYZING JOB CARDS:
+[2026-02-09 07:02:43]    ✓ JOB_CARD_402628821.pdf → Account 402628821
+[2026-02-09 07:02:43]    ✓ JOB_CARD_402629830.pdf → Account 402629830
+[2026-02-09 07:02:43]    ✓ JOB_CARD_402630372.pdf → Account 402630372
+[2026-02-09 07:02:43]    ✓ JOB_CARD_402709100.pdf → Account 402709100
+[2026-02-09 07:02:43]    ✓ JOB_CARD_550102824.pdf → Account 550102824
+[2026-02-09 07:02:43]    ✓ JOB_CARD_550453149.pdf → Account 550453149
+[2026-02-09 07:02:43]    ✓ JOB_CARD_551651457.pdf → Account 551651457
+[2026-02-09 07:02:43]    ✓ JOB_CARD_551869245.pdf → Account 551869245
+[2026-02-09 07:02:43]    ✓ JOB_CARD_551951002.pdf → Account 551951002
+[2026-02-09 07:02:43]    ✓ JOB_CARD_553368822.pdf → Account 553368822
+[2026-02-09 07:02:43]    ✓ JOB_CARD_555778133.pdf → Account 555778133
+[2026-02-09 07:02:43]    ✓ JOB_CARD_556709527.pdf → Account 556709527
+[2026-02-09 07:02:43]    ✓ JOB_CARD_556723313.pdf → Account 556723313
+[2026-02-09 07:02:43]    ✓ JOB_CARD_557648718.pdf → Account 557648718
+[2026-02-09 07:02:43]    ✓ JOB_CARD_558653245.pdf → Account 558653245
+[2026-02-09 07:02:43]    ✓ JOB_CARD_559215251.pdf → Account 559215251
+[2026-02-09 07:02:43] 
+🔍 ANALYZING IMAGE PDFs:
+[2026-02-09 07:02:43]    ✓ IMAGES_402628821.pdf → Account 402628821
+[2026-02-09 07:02:43]    ✓ IMAGES_402629830.pdf → Account 402629830
+[2026-02-09 07:02:43]    ✓ IMAGES_402630372.pdf → Account 402630372
+[2026-02-09 07:02:43]    ✓ IMAGES_402709100.pdf → Account 402709100
+[2026-02-09 07:02:43]    ✓ IMAGES_550102824.pdf → Account 550102824
+[2026-02-09 07:02:43]    ✓ IMAGES_550453149.pdf → Account 550453149
+[2026-02-09 07:02:43]    ✓ IMAGES_551651457.pdf → Account 551651457
+[2026-02-09 07:02:43]    ✓ IMAGES_551869245.pdf → Account 551869245
+[2026-02-09 07:02:43]    ✓ IMAGES_551951002.pdf → Account 551951002
+[2026-02-09 07:02:43]    ✓ IMAGES_553368822.pdf → Account 553368822
+[2026-02-09 07:02:43]    ✓ IMAGES_555778133.pdf → Account 555778133
+[2026-02-09 07:02:43]    ✓ IMAGES_556709527.pdf → Account 556709527
+[2026-02-09 07:02:43]    ✓ IMAGES_556723313.pdf → Account 556723313
+[2026-02-09 07:02:43]    ✓ IMAGES_557648718.pdf → Account 557648718
+[2026-02-09 07:02:43]    ✓ IMAGES_558653245.pdf → Account 558653245
+[2026-02-09 07:02:43]    ✓ IMAGES_559215251.pdf → Account 559215251
+[2026-02-09 07:02:43] 
+🤝 MATCHING RESULTS:
+[2026-02-09 07:02:43]    ✅ Accounts with both files: 16
+[2026-02-09 07:02:43]    ⚠️  Job cards without images: 0
+[2026-02-09 07:02:43]    ⚠️  Images without job cards: 0
+[2026-02-09 07:02:43] 
+🔄 MERGING PROCESS:
+[2026-02-09 07:02:43] 
+   Processing account 402628821...
+[2026-02-09 07:02:43]    ✅ Success: MERGED_402628821.pdf (625.6 KB)
+[2026-02-09 07:02:43] 
+   Processing account 402629830...
+[2026-02-09 07:02:43]    ✅ Success: MERGED_402629830.pdf (778.7 KB)
+[2026-02-09 07:02:43] 
+   Processing account 402630372...
+[2026-02-09 07:02:44]    ✅ Success: MERGED_402630372.pdf (768.1 KB)
+[2026-02-09 07:02:44] 
+   Processing account 402709100...
+[2026-02-09 07:02:44]    ✅ Success: MERGED_402709100.pdf (773.7 KB)
+[2026-02-09 07:02:44] 
+   Processing account 550102824...
+[2026-02-09 07:02:44]    ✅ Success: MERGED_550102824.pdf (510.6 KB)
+[2026-02-09 07:02:44] 
+   Processing account 550453149...
+[2026-02-09 07:02:44]    ✅ Success: MERGED_550453149.pdf (800.1 KB)
+[2026-02-09 07:02:44] 
+   Processing account 551651457...
+[2026-02-09 07:02:44]    ✅ Success: MERGED_551651457.pdf (678.7 KB)
+[2026-02-09 07:02:44] 
+   Processing account 551869245...
+[2026-02-09 07:02:45]    ✅ Success: MERGED_551869245.pdf (669.6 KB)
+[2026-02-09 07:02:45] 
+   Processing account 551951002...
+[2026-02-09 07:02:45]    ✅ Success: MERGED_551951002.pdf (678.3 KB)
+[2026-02-09 07:02:45] 
+   Processing account 553368822...
+[2026-02-09 07:02:45]    ✅ Success: MERGED_553368822.pdf (654.2 KB)
+[2026-02-09 07:02:45] 
+   Processing account 555778133...
+[2026-02-09 07:02:45]    ✅ Success: MERGED_555778133.pdf (688.7 KB)
+[2026-02-09 07:02:45] 
+   Processing account 556709527...
+[2026-02-09 07:02:46]    ✅ Success: MERGED_556709527.pdf (646.6 KB)
+[2026-02-09 07:02:46] 
+   Processing account 556723313...
+[2026-02-09 07:02:46]    ✅ Success: MERGED_556723313.pdf (690.0 KB)
+[2026-02-09 07:02:46] 
+   Processing account 557648718...
+[2026-02-09 07:02:46]    ✅ Success: MERGED_557648718.pdf (797.8 KB)
+[2026-02-09 07:02:46] 
+   Processing account 558653245...
+[2026-02-09 07:02:46]    ✅ Success: MERGED_558653245.pdf (805.2 KB)
+[2026-02-09 07:02:46] 
+   Processing account 559215251...
+[2026-02-09 07:02:46]    ✅ Success: MERGED_559215251.pdf (633.3 KB)
+[2026-02-09 07:02:46] 
+======================================================================
+[2026-02-09 07:02:46] 📊 MERGE SUMMARY
+[2026-02-09 07:02:46] ======================================================================
+[2026-02-09 07:02:46] ✅ Successfully merged: 16 account(s)
+[2026-02-09 07:02:46] 
+📦 GENERATED FILES (16):
+[2026-02-09 07:02:46]    • MERGED_402628821.pdf (625.6 KB)
+[2026-02-09 07:02:46]    • MERGED_402629830.pdf (778.7 KB)
+[2026-02-09 07:02:46]    • MERGED_402630372.pdf (768.1 KB)
+[2026-02-09 07:02:46]    • MERGED_402709100.pdf (773.7 KB)
+[2026-02-09 07:02:46]    • MERGED_550102824.pdf (510.6 KB)
+[2026-02-09 07:02:46]    • MERGED_550453149.pdf (800.1 KB)
+[2026-02-09 07:02:46]    • MERGED_551651457.pdf (678.7 KB)
+[2026-02-09 07:02:46]    • MERGED_551869245.pdf (669.6 KB)
+[2026-02-09 07:02:46]    • MERGED_551951002.pdf (678.3 KB)
+[2026-02-09 07:02:46]    • MERGED_553368822.pdf (654.2 KB)
+[2026-02-09 07:02:46]    • MERGED_555778133.pdf (688.7 KB)
+[2026-02-09 07:02:46]    • MERGED_556709527.pdf (646.6 KB)
+[2026-02-09 07:02:46]    • MERGED_556723313.pdf (690.0 KB)
+[2026-02-09 07:02:46]    • MERGED_557648718.pdf (797.8 KB)
+[2026-02-09 07:02:46]    • MERGED_558653245.pdf (805.2 KB)
+[2026-02-09 07:02:46]    • MERGED_559215251.pdf (633.3 KB)
+[2026-02-09 07:02:46] 
+   Total output size: 11199.0 KB
+[2026-02-09 07:02:46] 
+💾 Log saved to: /Users/skhumbuzotshuma/Downloads/combine/merge_log.txt
+[2026-02-09 07:02:46] ✨ Process completed!
